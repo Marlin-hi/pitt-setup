@@ -125,6 +125,14 @@ if (-not (Test-Path ".git")) {
     Write-Ok "Git bereits initialisiert"
 }
 
+# Git user config setzen falls noch nicht vorhanden
+$gitUserName = git config user.name 2>$null
+if (-not $gitUserName) {
+    git config user.name $VaultName
+    git config user.email "$($VaultName.ToLower())@local"
+    Write-Ok "Git User konfiguriert: $VaultName"
+}
+
 # Erste Notiz
 $welcomePath = "$VaultDir\Willkommen.md"
 if (-not (Test-Path $welcomePath)) {
