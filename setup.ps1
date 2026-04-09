@@ -167,16 +167,14 @@ if (-not (Test-Path $gitignorePath)) {
 }
 
 # Initial commit
-try {
-    $hasCommits = git log --oneline -1 2>&1
-} catch {
-    $hasCommits = $null
-}
+$ErrorActionPreference = "Continue"
+$hasCommits = git log --oneline -1 2>$null
 if (-not $hasCommits) {
-    git add -A 2>&1 | Out-Null
-    git commit -m "Vault angelegt" 2>&1 | Out-Null
+    git add -A 2>$null
+    git commit -m "Vault angelegt" 2>$null
     Write-Ok "Erster Commit erstellt"
 }
+$ErrorActionPreference = "Stop"
 Pop-Location
 
 Write-Done
