@@ -13,7 +13,11 @@ cd ".worktrees/$BRANCH"
 unset CLAUDECODE
 export SAGE_SUBAGENT=1
 PROMPT=$(cat "$PROJECT_DIR/$PROMPT_FILE")
-claude "$PROMPT"
+# Claude-Pfad finden
+CLAUDE_BIN="claude"
+[ -f "$HOME/.local/bin/claude" ] && CLAUDE_BIN="$HOME/.local/bin/claude"
+[ -f "$LOCALAPPDATA/Programs/claude-code/claude.exe" ] && CLAUDE_BIN="$LOCALAPPDATA/Programs/claude-code/claude.exe"
+"$CLAUDE_BIN" "$PROMPT"
 cd "$PROJECT_DIR"
 git merge ".worktrees/$BRANCH" --no-edit 2>/dev/null || true
 git worktree remove ".worktrees/$BRANCH" --force 2>/dev/null || true
