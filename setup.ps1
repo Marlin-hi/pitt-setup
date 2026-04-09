@@ -82,7 +82,16 @@ if (Get-Command claude -ErrorAction SilentlyContinue) {
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
     if (Test-Path "$HOME\.local\bin\claude.exe") { $env:Path = "$HOME\.local\bin;" + $env:Path }
     if (Test-Path "$env:LOCALAPPDATA\Programs\claude-code\claude.exe") { $env:Path = "$env:LOCALAPPDATA\Programs\claude-code;" + $env:Path }
-    if (Get-Command claude -ErrorAction SilentlyContinue) {
+    # PATH persistent setzen
+    $claudePath = $null
+    if (Test-Path "$HOME\.local\bin\claude.exe") { $claudePath = "$HOME\.local\bin" }
+    elseif (Test-Path "$env:LOCALAPPDATA\Programs\claude-code\claude.exe") { $claudePath = "$env:LOCALAPPDATA\Programs\claude-code" }
+    if ($claudePath) {
+        $userPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
+        if ($userPath -notlike "*$claudePath*") {
+            [System.Environment]::SetEnvironmentVariable("Path", "$userPath;$claudePath", "User")
+        }
+        $env:Path = "$claudePath;" + $env:Path
         Write-Ok "Claude Code installiert"
     } else {
         Write-Warn "Claude Code installiert, aber nicht im PATH. PowerShell neu starten nach dem Setup."
